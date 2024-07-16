@@ -1,0 +1,27 @@
+{% extends "navbar.html" %}
+
+{% block title %}Logout{% endblock title %}
+
+{% block body %}
+
+
+<form class="form-signin" method="post" action="/logout">
+    {% csrf_token %}
+  
+  <button class="btn btn-lg btn-primary btn-block"  style="border-radius:11px" type="submit">Logout</button>
+  <p class="mt-5 mb-3 text-muted">&copy; 2023</p>
+</form>
+
+
+{% if user.is_authenticated %}
+  Hi {{ user.username }}!
+  <p><a href="{% url 'logout' %}">Log Out</a></p>
+{% else %}
+  <p>You are not logged in</p>
+  <a href="{% url 'login' %}">Log In</a>
+{% endif %}
+
+
+
+{% endblock body %}
+

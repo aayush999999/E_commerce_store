@@ -1,0 +1,40 @@
+{% extends "navbar.html" %}
+
+{% block body %}
+
+
+<div class="container mt-5" align="center">
+    <form class="col-6 mx-auto card p-3 shadow-lg mb-3" method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+        <div class="form-group">
+          <h1>Login</h1>
+          <hr>
+
+          {% if messages %}
+            {{ message.tags }}
+            <div class="alert alert-danger" role="alert">
+                {% for message in messages %}
+                {{ message }}
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="mb-10">
+                <label for="exampleInputEmail" class="form-label">Username</label>
+                <input type="text" class="form-control" name="username" id="exampleInputEmail" aria-describe>
+            </div>
+            <div class="mb-3">
+                <label for="exampleInputPassword" class="form-label">Password</label>
+                <input type="password" name="password" class="form-control" id="exampleInputPassword">
+            </div>
+            
+            <p>
+                Don't have account <a href="register">Register Here</a>
+            </P>
+
+            <button type="submit" class="btn btn-primary">Submit</button>    
+        </div>
+    </form>
+</div>
+
+{% endblock %}

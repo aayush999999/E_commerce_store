@@ -1,0 +1,118 @@
+{% extends "navbar.html" %}
+{% load static %}
+{% block title %}CART VIEW{% endblock title %}
+
+{% block body %}
+<div class="container">
+    <div class="col my-4">
+        <h2>    Review Your Cart Items</h2>
+
+        <div class="my-4" >  
+        <div class="col-lg-12">
+        <div class="box-element">
+            <a class="btn btn-outline-dark" href="/practice">&#x2190;  Continue Shopping</a><br><br>
+            <table class="table">
+                <tr>
+                    <th><h5>Items: <strong>{{order.get_cart_items}}</strong></h5></th>
+                    <th><h5>Total: <strong>Rs.{{order.get_cart_total}}</strong></h5></th>
+                    <th><a style="float:right; margin:5px" class="btn btn-success" href="{% url 'checkout' %}">Checkout </a></th>
+                </tr>
+            </table>
+        </div>
+        </div>
+        </div>
+
+        <table class="table">
+            <thead class="thead-default">
+                <tr>
+                    <th></th>
+                    <th>Item Group</th>
+                    <th>Item Description</th>
+                    <th>Item Rate</th>
+                    <th>Quantity</th>
+                    <th></th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+                <tr>
+                    {% for i in items %}
+                    <th><img src="/media/{{i.item.image}}" width="100" height="100" ></th>
+                    <th>{{i.item.item_group}}</th>
+                    <th>{{i.item.item_desc}}</th>
+                    <th>{{i.item.item_rate}}</th>
+                    <th>
+                        <p class="quantity">{{i.quantity}}</p> 
+                        <th><a data-product={{i.item.id}} data-action="add" class="chg-quantity update-cart" href="">&#916;</a>
+                        <a data-product={{i.item.id}} data-action="remove" class="chg-quantity update-cart"  href="">&#8711; </a>
+                        </th>
+                    </th>
+                    <th>Rs.{{i.get_total}}</th>
+                    {% endfor %}
+                </tr>
+            </tbody>
+        
+
+{% endblock %}
+
+{% block js %} 
+
+<script>
+    var user = '{{request.user}}'
+
+var updateBtns = document.getElementsByClassName('update-cart');
+
+for (var i = 0; i < updateBtns.length; i++){
+  updateBtns[i].addEventListener('click', function(){ 
+    var productId = this.dataset.product;
+    var action = this.dataset.action;
+    console.log('productId:', productId, 'action:', action)
+    console.log('USER:', user )  
+    if (user == 'AnonymousUser'){
+      console.log('User is not authenticated')
+    }else{
+      updateUserOrder(productId, action)
+    }
+
+  });
+}
+function getToken(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+var csrftoken = getToken('csrftoken');
+
+function updateUserOrder(productId, action){
+    var url = '/update_item/'
+    console.log('URL:', url)
+    fetch(`${window.location.origin}${url}`, {
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'X-CSRFToken':csrftoken ,
+      },
+      body:JSON.stringify({'productId': productId, 'action':action})
+    })
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      console.log('data:', data)
+      location.reload()
+    });
+  }
+
+</script>
+
+{% endblock %}

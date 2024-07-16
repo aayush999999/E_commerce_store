@@ -1,0 +1,209 @@
+{% extends "navbar.html" %} 
+
+{% load static %} 
+
+{% block title%}CHECKOUT{%endblock title %} 
+
+{% block body %}
+
+<div class="container">
+  <div class="col my-4" id="chkdetl">
+    <h2>Enter Address & Other Details:</h2>
+    
+    <form action="checkout" method="POST" id="chkdetl">
+    {% csrf_token %} 
+      {% comment %} <input type="hidden" name="final_order" id="final_order" /> {% endcomment %}
+      {% comment %} <input type="hidden" name="amount" id="amount" />  {% endcomment %}
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="name">Name</label>
+          <input
+            type="text"
+            class="form-control"
+            id="name"
+            name="name"
+            placeholder="Name"
+            required
+          />
+        </div>
+        <div class="form-group col-md-6">
+          <label for="email">Email</label>
+          <input
+            type="email"
+            class="form-control"
+            id="email"
+            name="email"
+            placeholder="Email"
+            required
+          />
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="addr">Address</label>
+        <input
+          type="text"
+          class="form-control"
+          id="addr"
+          name="addr"
+          placeholder="1234 Main St"
+          required
+        />
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="city">City</label>
+          <input
+            type="text"
+            class="form-control"
+            required
+            id="city"
+            name="city"
+          />
+        </div>
+        <div class="form-group col-md-4">
+          <label for="state">State</label>
+          <input
+            type="text"
+            class="form-control"
+            id="state"
+            name="state"
+            placeholder="Enter State"
+            required
+          />
+        </div>
+        <div class="form-group col-md-2">
+          <label for="zip">Pincode</label>
+          <input
+            type="text"
+            class="form-control"
+            id="zip_code"
+            name="zip_code"
+            required
+          />
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="number">Phone Number</label>
+        <input
+          type="tel"
+          class="form-control"
+          required
+          id="number"
+          name="number"
+        />
+      </div>
+      <button type="submit" class="btn btn-primary" onclick="submitFormData()">
+        Place Order
+      </button>
+    </form>
+   
+  </div>
+  <div class="col my-4">
+    <div class="box-element">
+      <h3>Order Summary:</h3>
+      <hr>
+      <div class="cart-row">
+        {% comment %}
+        <div><img src="" width="100" height="100" /></div>
+        <div><p>product 1</p></div>
+        <div><p>product 2</p></div>
+        <div><p>Rs. 20</p></div>
+        <div><p>Rs. 20</p></div>
+        <div><p>X2</p></div>
+        {% endcomment %}
+
+        <tbody>
+          <tr>
+            {% for i in items %}
+            <th>
+              <img src="/media/{{i.item.image}}" width="100" height="100" />
+            </th>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <th>{{i.item.item_group}}</th>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <th>{{i.item.item_desc}}</th>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <th>Rs. {{i.item.item_rate}}</th>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <th>x{{i.quantity}}</th>
+            &nbsp;&nbsp;&nbsp;&nbsp; {% endfor %}
+          </tr>
+        </tbody>
+      </div>
+      <h5>Items : {{order.get_cart_items}}</h5>
+      <h5>Total: {{order.get_cart_total}}</h5>
+    </div>
+  </div>
+</div>
+
+{% endblock body %} {% block js %}
+
+<script>
+      var user = '{{request.user}}'
+      {% comment %} var shipping = '{{order.shipping}}' {% endcomment %}
+      {% comment %} var total_items = '{{order.get_cart_items}}' {% endcomment %}
+      {% comment %} var total_amount = '{{order.get_cart_total}}' {% endcomment %}
+
+
+      {% comment %} if(shipping == 'False'){
+        document.getElementById('chkdetl').innerHTML = ''
+      } {% endcomment %}
+
+
+
+
+
+      function submitFormData(){
+        console.log('submit button clicked')
+        chkdetl = document.getElementById('chkdetl')
+        var checkoutData = {
+          'name': null,
+          'email': null,  
+          'addr': null,
+          'city': null,
+          'state': null,
+          'zip_code': null,
+          'number': null,
+          //'total_items': total_items,
+          //'total_amount': total_amount,
+        }
+
+        if (chkdetl != 'False'){
+          checkoutData.name = chkdetl.name.value
+          checkoutData.email = chkdetl.email.value
+          checkoutData.addr = chkdetl.addr.value
+          checkoutData.city = chkdetl.city.value
+          checkoutData.state = chkdetl.state.value
+          checkoutData.zip_code = chkdetl.zip_code.value
+          checkoutData.number = chkdetl.number.value
+          //checkoutData.total_items = chkdetl.total_items.value
+          //checkoutData.total_amount = chkdetl.total_amount.value
+
+        }
+
+        var url = 'process_order/'
+         fetch(`${window.location.origin}${url}`,{
+          method: 'POST',
+          headers:{
+            'Content-Type':'application/json',
+            'X-CSRFToken':csrftoken ,
+          },
+          body:JSON.stringify({'chkdetl':checkoutData})
+        })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log('Success:', data);
+          alert('Transaction completed');
+          windows.location.href = "{% url 'home' %}"
+        })
+  
+      }
+
+
+
+      console.log('chkdetl:', chkdetl)
+
+
+</script>
+
+{% endblock %}

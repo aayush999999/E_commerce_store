@@ -1,0 +1,42 @@
+{% extends "navbar.html" %}
+
+{% block title %}SELLER{% endblock title %}
+
+{% block body %}
+
+<div class="container my-3">
+    <h3>Insert Items</h3>
+    <form action="" method="post" enctype="multipart/form-data"> {% csrf_token %}
+      <div class="form-group">
+        <label for="img">Image :</lable>
+        <input type="file" class="form-control" id="image" name="image">
+      </div>     
+      <div class="form-group">
+        <label for="itemgroup">Name :</lable>
+        <input type="text" class="form-control" id="item_desc" name="item_desc" placeholder="Enter Item Name">
+      </div>
+      <select class="form-control" id="item_group" name="item_group">
+        <option value="">Select</option>
+        <option value="Fashion">Fashion</option>
+        <option value="Electronic">Electronic</option>
+        <option value="Furniture">Furniture</option>
+        <option value="Grocery">Grocery</option>
+        <option value="Electrical">Electrical</option>
+        <option value="Toys">Toys</option>
+        <option value="Mobile">Mobile</option>
+        <option value="Appliance">Appliance</option>
+      </select>
+      <div class="form-group">
+        <label for="rate">MRP :</label>
+        <input type="text" class="form-control" id="item_rate" name="item_rate" placeholder="Enter Item Price">
+      </div>
+      <div class="form-group">
+        <label for="qty">Quantity :</label>
+        <input type="text" class="form-control" id="stock_qty" name="stock_qty" placeholder="Enter Quantity">
+      </div>  
+      <button type="submit" class="btn btn-success">Submit</button>
+    </form>
+</div>
+
+
+{% endblock body %}
