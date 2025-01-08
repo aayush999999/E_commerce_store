@@ -1,7 +1,7 @@
 
 from django.shortcuts import render, redirect
 from home.models import *
-from datetime import datetime
+# from datetime import datetime
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
@@ -74,7 +74,7 @@ def login_page(request):
         
         else:
             login(request, user)
-            return redirect('/practice')
+            return redirect('/buyer')
 
     return render(request, 'login.html')
 
@@ -95,7 +95,7 @@ def search(request):
     if item.count() == 0:
         messages.warning(request, "No Search result found. Please refine your query ")    
     params={'item': item, 'query': query}
-    return render(request, 'practice.html', params)
+    return render(request, 'buyer.html', params)
 
 
 #    CART VIEW
@@ -219,8 +219,9 @@ def seller(request):
         image=request.FILES['image']
         item_desc=request.POST.get('item_desc', '')
         item_group=request.POST.get('item_group', '')
+        # today = datetime.today()  # This works because you're importing the datetime class
         item_rate=request.POST.get('item_rate', '')
         stock_qty=request.POST.get('stock_qty', '')
-        itemInsert = ItemInsert(image=image, item_desc=item_desc, item_group=item_group, item_rate=item_rate, stock_qty=stock_qty, item_date=datetime.today())
+        itemInsert = ItemInsert(image=image, item_desc=item_desc, item_group=item_group, item_rate=item_rate, stock_qty=stock_qty) #, item_date=datetime.today()
         itemInsert.save()
     return render(request, "seller.html") 

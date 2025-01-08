@@ -10,7 +10,7 @@ class ItemInsert(models.Model):
     item_desc = models.CharField(max_length=30)
     stock_qty = models.IntegerField(default="")
     item_rate = models.IntegerField(default="")
-    item_date = models.DateField()
+    # item_date = models.DateField()
     image = models.ImageField(upload_to="seller/images", default="")
 
     def __str__(self):
