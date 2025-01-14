@@ -33,7 +33,7 @@
         
         <td><h5 class="card-title" id="nameitem{{i.id}}">{{i.item_desc}}</h5></td>
         <td><span id="priceitem{{i.id}}">{{i.item_rate}}</span></td>
-           <td> <button data-product="{{i.id}}" data-action="add" class="btn btn-outline-secondary add-btn update-cart"> Add to Ccart </button>
+           <td> <button data-product="{{i.id}}" data-action="add" class="btn btn-outline-secondary add-btn update-cart"> Add to Cart </button>
           </span></td>
            </tr>
   </tbody>
@@ -86,25 +86,63 @@ for (var i = 0; i < updateBtns.length; i++){
 
 
 
-function updateUserOrder(productId, action){
-    var url = '/update_item/'
-    console.log('URL:', url)
-    fetch(`${window.location.origin}${url}`, {
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'X-CSRFToken':csrftoken ,
-      },
-      body:JSON.stringify({'productId': productId, 'action':action})
-    })
-    .then((response) => {
-      return response.json();
-    })
-    .then((data) => {
-      console.log('data:', data)
-      location.reload()
-    });
-  }
+// function updateUserOrder(productId, action){
+//     var url = '/update_item/'
+//     console.log('URL:', url)
+//     fetch(`${window.location.origin}${url}`, {
+//       method:'POST',
+//       headers:{
+//         'Content-Type':'application/json',
+//         'X-CSRFToken':csrftoken ,
+//       },
+//       body:JSON.stringify({'productId': productId, 'action':action})
+//     })
+//     .then((response) => {
+//       return response.json();
+//     })
+//     .then((data) => {
+//       console.log('data:', data)
+//       location.reload()
+//     });
+//   }
+
+
+
+function updateUserOrder(productId, action) {
+  var url = '/update_item/';
+  console.log('Request URL:', `${window.location.origin}${url}`);
+
+  fetch(`${window.location.origin}${url}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': csrftoken,
+    },
+    body: JSON.stringify({ 'productId': productId, 'action': action }),
+  })
+  .then((response) => {
+    // Check if the response is OK (status code 200)
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    // Check if the response content type is JSON
+    const contentType = response.headers.get("Content-Type");
+    if (contentType && contentType.includes("application/json")) {
+      return response.json();  // Parse as JSON if correct content type
+    } else {
+      return response.text().then((text) => {
+        throw new Error(`Expected JSON but received ${contentType}: ${text}`);
+      });
+    }
+  })
+  .then((data) => {
+    console.log('data:', data);
+    location.reload();
+  })
+  .catch((error) => {
+    console.error('Error:', error);
+  });
+}
 
 
 

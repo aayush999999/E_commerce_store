@@ -12,6 +12,7 @@ from django.http import JsonResponse
 
 
 
+
 # Create your views here.
 
 def homepage(request):
@@ -225,3 +226,14 @@ def seller(request):
         itemInsert = ItemInsert(image=image, item_desc=item_desc, item_group=item_group, item_rate=item_rate, stock_qty=stock_qty) #, item_date=datetime.today()
         itemInsert.save()
     return render(request, "seller.html") 
+
+
+
+def update_item(request):
+    if request.method == 'POST':
+        # Your logic to process the POST request
+        # Example response, adjust based on your logic
+        return JsonResponse({'status': 'success'})
+    return JsonResponse({'error': 'Invalid method'}, status=405)
+
+    
